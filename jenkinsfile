@@ -1,0 +1,60 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE = 'othmaneob/cloude-app:latest'
+    }
+
+    stages {
+        stage('Load Environment Variables') {
+            steps {
+                script {
+                    def props = readFile('.env').split('\n')
+                    props.each { line ->
+                        def keyValue = line.trim().split('=')
+                        if (keyValue.length == 2) {
+                            env[keyValue[0]] = keyValue[1]
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    echo "Building Docker image..."
+                    sh "docker build -t ${DOCKER_IMAGE} -f Dockerfile ."
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    echo "Logging into DockerHub..."
+                    sh "echo ${env.DOCKER_PASSWORD} | docker login -u ${env.DOCKER_USERNAME} --password-stdin"
+                    sh "docker push ${DOCKER_IMAGE}"
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    echo "Deploying to Kubernetes..."
+                    sh "kubectl --kubeconfig=${env.KUBE_CONFIG_PATH} apply -f deployment.yaml"
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Deployment successful!'
+        }
+        failure {
+            echo '❌ Pipeline failed! Please check the logs.'
+        }
+    }
+}
