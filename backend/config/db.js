@@ -3,8 +3,8 @@ const mysql = require('mysql2');
 const dbConfig = {
   host: 'localhost',
   user: 'root',
-  password: 'password',
-  database: 'weather_app'
+  password: 'root',
+  database: 'cloude_app'
 };
 
 const connection = mysql.createConnection(dbConfig);
