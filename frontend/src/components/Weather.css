@@ -1,0 +1,30 @@
+.weather-container {
+  padding: 20px;
+  background-color: #f0f0f0;
+}
+
+.weather-header {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.weather-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.weather-item {
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.temperature {
+  font-weight: bold;
+}
+
+.condition {
+  font-style: italic;
+}
